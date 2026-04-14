@@ -7,8 +7,22 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f0f2f5; color: #333; }
         .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
-        .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold; border: 1px solid #1a73e8; }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
+        .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #1a73e8; }
+        
+        /* Gaya untuk teks arahan amaran */
+        .warning-text { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            padding: 10px; 
+            border-radius: 5px; 
+            border: 1px solid #ffeeba; 
+            font-size: 13px; 
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
         input { width: 100%; padding: 12px; margin-top: 8px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; margin-top: 25px; font-size: 16px; font-weight: bold; transition: background 0.3s; }
@@ -26,13 +40,16 @@
         <img src="LOGO_SEKOLAH.png" alt="Logo Sekolah" style="width: 100px; height: auto; margin-bottom: 10px;">
     </div>
     
-    <h2>Borang Tempahan Projektor </h2>
+    <h2>Borang Tempahan Projektor</h2>
     
     <div class="info-box">
         UNIT ICT SK KRANGAN
     </div>
-    
+
+    <div class="warning-text">
+        ⚠️ <strong>PERHATIAN:</strong> Sila rujuk <b>Rekod Tempahan</b> di bahagian bawah halaman ini sebelum mengisi borang untuk mengelakkan pertindihan waktu penggunaan.
     </div>
+    
     <label>Nama Guru:</label>
     <input type="text" id="namaGuru" placeholder="Masukkan nama penuh">
     
@@ -43,7 +60,7 @@
 
     <hr style="margin-top: 30px; border: 0; border-top: 1px solid #eee;">
 
-    <h3>Rekod Tempahan Baru</h3>
+    <h3>Rekod Tempahan</h3>
     <table id="jadualBooking">
         <thead>
             <tr>
@@ -67,17 +84,15 @@
             return;
         }
 
-        // Kunci butang supaya tidak tekan dua kali
         btn.disabled = true;
         btn.innerText = "Menghantar...";
 
         const dataTempahan = {
             nama: nama,
-            alat: "Projektor Utama", // Tetap kerana hanya ada satu
+            alat: "Projektor Utama",
             masa: masa.replace('T', ' ')
         };
 
-        // URL Google Apps Script anda
         const urlAPI = "https://script.google.com/macros/s/AKfycbxMLOqx5U4OANWkkOokAefZlbLTPZdqE-0ShbSUG3wDJJu7wh_xdehhuMDo1osqqU-l-g/exec";
 
         try {
@@ -88,14 +103,12 @@
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            // Berjaya! Tambah ke jadual visual
             const jadual = document.getElementById('jadualBooking').getElementsByTagName('tbody')[0];
-            const barisBaru = jadual.insertRow(0); // Tambah di atas sekali
+            const barisBaru = jadual.insertRow(0);
             barisBaru.innerHTML = `<td><b>${nama}</b></td><td>${dataTempahan.masa}</td>`;
 
             alert("Tempahan Berjaya Disimpan!");
             
-            // Kosongkan input
             document.getElementById('namaGuru').value = "";
             document.getElementById('tarikhMasa').value = "";
 
