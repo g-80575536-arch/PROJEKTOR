@@ -6,30 +6,27 @@
     <title>Booking Projektor SK Krangan</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f0f2f5; color: #333; }
-        .container { max-width: 650px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { max-width: 850px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
         .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #1a73e8; }
         
         .warning-text { 
-            background-color: #fff3cd; 
-            color: #856404; 
-            padding: 10px; 
-            border-radius: 5px; 
-            border: 1px solid #ffeeba; 
-            font-size: 13px; 
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.4;
+            background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; 
+            border: 1px solid #ffeeba; font-size: 13px; margin-bottom: 20px; text-align: center;
         }
 
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
-        input { width: 100%; padding: 12px; margin-top: 8px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size: 15px; }
+        
+        .flex-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .flex-item { flex: 1; min-width: 150px; }
+
         button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; margin-top: 25px; font-size: 16px; font-weight: bold; transition: background 0.3s; }
         button:hover { background-color: #1557b0; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        button:disabled { background-color: #ccc; }
         
         .table-container { overflow-x: auto; margin-top: 30px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 450px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; }
         th { background-color: #f8f9fa; color: #555; }
         tr:nth-child(even) { background-color: #fafafa; }
@@ -40,30 +37,44 @@
 
 <div class="container">
     <div style="text-align: center;">
-        <img src="LOGO_SEKOLAH.png" alt="Logo Sekolah" style="width: 100px; height: auto; margin-bottom: 10px;">
+        <img src="LOGO_SEKOLAH.png" alt="Logo Sekolah" style="width: 80px; height: auto; margin-bottom: 10px;">
     </div>
     
     <h2>Borang Tempahan Projektor</h2>
-    
-    <div class="info-box">
-        UNIT ICT SK KRANGAN
-    </div>
+    <div class="info-box">UNIT ICT SK KRANGAN</div>
 
     <div class="warning-text">
-        ⚠️ <strong>PERHATIAN:</strong> Sila rujuk <b>Rekod Tempahan</b> di bawah sebelum mengisi borang untuk mengelakkan pertindihan waktu penggunaan.
+        ⚠️ <strong>PERHATIAN:</strong> Sila rujuk rekod di bawah sebelum mengisi untuk mengelak pertindihan waktu.
     </div>
     
     <label>Nama Guru:</label>
     <input type="text" id="namaGuru" placeholder="Nama penuh anda">
-    
-    <label>Tujuan Penggunaan:</label>
-    <input type="text" id="tujuan" placeholder="Contoh: PdPC / Taklimat / Mesyuarat">
 
-    <label>Lokasi Penggunaan:</label>
-    <input type="text" id="lokasi" placeholder="Contoh: Kelas 4 Gemilang / Bilik Mesyuarat">
+    <div class="flex-row">
+        <div class="flex-item">
+            <label>Tarikh:</label>
+            <input type="date" id="tarikh">
+        </div>
+        <div class="flex-item">
+            <label>Masa Guna:</label>
+            <input type="time" id="masaGuna">
+        </div>
+        <div class="flex-item">
+            <label>Masa Hantar:</label>
+            <input type="time" id="masaHantar">
+        </div>
+    </div>
 
-    <label>Tarikh & Masa Penggunaan:</label>
-    <input type="datetime-local" id="tarikhMasa">
+    <div class="flex-row">
+        <div class="flex-item">
+            <label>Lokasi:</label>
+            <input type="text" id="lokasi" placeholder="Cth: Kelas 4 Gemilang">
+        </div>
+        <div class="flex-item">
+            <label>Tujuan:</label>
+            <input type="text" id="tujuan" placeholder="Cth: PdPC Sains">
+        </div>
+    </div>
     
     <button id="btnHantar" onclick="tambahBooking()">Hantar Tempahan</button>
 
@@ -76,103 +87,83 @@
             <thead>
                 <tr>
                     <th>Guru</th>
-                    <th>Tujuan</th>
+                    <th>Tarikh</th>
+                    <th>Guna</th>
+                    <th>Hantar</th>
                     <th>Lokasi</th>
-                    <th>Waktu</th>
+                    <th>Tujuan</th>
                 </tr>
             </thead>
-            <tbody>
-                </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    const urlAPI = "https://script.google.com/macros/s/AKfycbznnbNkkhQ3LRS6O4NlOyo1E2UlFwt8uooWJZEneH_Nx0_ONXXMglEfApjYNrJLN6WumA/exec";
+    const urlAPI = "https://script.google.com/macros/s/AKfycbx1UztmMkvdZxB48wOGNI7hw4xzPYGNSmF-s9548-T7mV8H9k93Rm7BIS1rMYsGz2qLEQ/exec";
 
-    // 1. Tarik data automatik semasa laman web dibuka
-    window.onload = function() {
-        paparRekodDariSheets();
-    };
+    window.onload = paparRekod;
 
-    async function paparRekodDariSheets() {
+    async function paparRekod() {
         const tbody = document.querySelector("#jadualBooking tbody");
         const status = document.getElementById('loadingStatus');
 
         try {
-            const response = await fetch(urlAPI);
-            const data = await response.json();
-
-            tbody.innerHTML = ""; // Kosongkan jadual lama
+            const res = await fetch(urlAPI);
+            const data = await res.json();
+            tbody.innerHTML = "";
             
-            if (data.length === 0) {
-                status.innerText = "Tiada rekod tempahan dijumpai.";
+            if (!data || data.length === 0) {
+                status.innerText = "Tiada rekod dijumpai.";
             } else {
                 status.style.display = "none";
-                // Susun data terbaru di atas
                 data.reverse().forEach(item => {
-                    const baris = tbody.insertRow();
-                    baris.innerHTML = `
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
                         <td><b>${item.nama}</b></td>
-                        <td>${item.tujuan}</td>
+                        <td>${item.tarikh}</td>
+                        <td>${item.mGuna}</td>
+                        <td>${item.mHantar}</td>
                         <td>${item.lokasi}</td>
-                        <td>${item.masa}</td>
+                        <td>${item.tujuan}</td>
                     `;
                 });
             }
-        } catch (error) {
-            console.error("Gagal memuatkan rekod:", error);
-            status.innerText = "Gagal memuatkan rekod dari Google Sheets.";
+        } catch (e) {
+            status.innerText = "Gagal memuatkan rekod.";
         }
     }
 
-    // 2. Fungsi untuk menghantar tempahan baru
     async function tambahBooking() {
         const btn = document.getElementById('btnHantar');
-        const nama = document.getElementById('namaGuru').value;
-        const tujuan = document.getElementById('tujuan').value;
-        const lokasi = document.getElementById('lokasi').value;
-        const masa = document.getElementById('tarikhMasa').value;
+        const payload = {
+            nama: document.getElementById('namaGuru').value,
+            tarikh: document.getElementById('tarikh').value,
+            mGuna: document.getElementById('masaGuna').value,
+            mHantar: document.getElementById('masaHantar').value,
+            lokasi: document.getElementById('lokasi').value,
+            tujuan: document.getElementById('tujuan').value
+        };
 
-        if (!nama || !tujuan || !lokasi || !masa) {
-            alert("Sila lengkapkan semua maklumat tempahan!");
+        if (!payload.nama || !payload.tarikh || !payload.mGuna || !payload.mHantar) {
+            alert("Sila lengkapkan maklumat penting (Nama, Tarikh, Masa)!");
             return;
         }
 
         btn.disabled = true;
         btn.innerText = "Menghantar...";
 
-        const dataTempahan = {
-            nama: nama,
-            tujuan: tujuan,
-            lokasi: lokasi,
-            alat: "Projektor Utama",
-            masa: masa.replace('T', ' ')
-        };
-
         try {
             await fetch(urlAPI, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(dataTempahan),
-                headers: { 'Content-Type': 'application/json' }
+                body: JSON.stringify(payload)
             });
 
-            alert("Tempahan Berjaya Disimpan!");
-            
-            // Segarkan semula jadual selepas 1 saat
-            setTimeout(paparRekodDariSheets, 1000);
-            
-            // Reset input
-            document.getElementById('namaGuru').value = "";
-            document.getElementById('tujuan').value = "";
-            document.getElementById('lokasi').value = "";
-            document.getElementById('tarikhMasa').value = "";
-
-        } catch (error) {
-            alert("Ralat sambungan. Sila cuba lagi.");
-            console.error(error);
-        } finally {
+            alert("Tempahan Berjaya!");
+            location.reload(); // Segarkan halaman untuk kemas kini jadual
+        } catch (e) {
+            alert("Ralat sambungan.");
             btn.disabled = false;
             btn.innerText = "Hantar Tempahan";
         }
