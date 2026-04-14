@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Projektor SK Krangan</title>
+    <title>Tempahan Projektor SK Krangan</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f0f2f5; color: #333; }
         .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -56,10 +56,10 @@
     <input type="text" id="namaGuru" placeholder="Nama penuh anda">
     
     <label>Tujuan Penggunaan:</label>
-    <input type="text" id="tujuan" placeholder="PdPC / Taklimat / Mesyuarat">
+    <input type="text" id="tujuan" placeholder="Contoh: PdPC / Taklimat / Mesyuarat">
 
     <label>Lokasi Penggunaan:</label>
-    <input type="text" id="lokasi" placeholder="Nama kelas atau bilik khas">
+    <input type="text" id="lokasi" placeholder="Contoh: Kelas 4 Gemilang / Bilik Mesyuarat">
 
     <label>Tarikh & Masa Penggunaan:</label>
     <input type="datetime-local" id="tarikhMasa">
@@ -93,5 +93,61 @@
         const lokasi = document.getElementById('lokasi').value;
         const masa = document.getElementById('tarikhMasa').value;
 
-        // Semakan input kosong
-        if (!nama || !tujuan || !lokasi || !masa
+        if (!nama || !tujuan || !lokasi || !masa) {
+            alert("Sila lengkapkan semua maklumat tempahan!");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Menghantar...";
+
+        const dataTempahan = {
+            nama: nama,
+            tujuan: tujuan,
+            lokasi: lokasi,
+            alat: "Projektor Utama",
+            masa: masa.replace('T', ' ')
+        };
+
+        // URL API BAHARU ANDA (...TL-u4g)
+        const urlAPI = "https://script.google.com/macros/s/AKfycbzQZtxuFrI1btphfQd9jQ2W3a4lkNj1r2AruBOlNISDpjMV-hM-wyNZq07fMK5xTL-u4g/exec";
+
+        try {
+            // Menghantar data ke Google Sheets
+            await fetch(urlAPI, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(dataTempahan),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // Tambah ke jadual visual
+            const jadual = document.getElementById('jadualBooking').getElementsByTagName('tbody')[0];
+            const barisBaru = jadual.insertRow(0);
+            barisBaru.innerHTML = `
+                <td><b>${nama}</b></td>
+                <td>${tujuan}</td>
+                <td>${lokasi}</td>
+                <td>${dataTempahan.masa}</td>
+            `;
+
+            alert("Tempahan Berjaya Disimpan!");
+            
+            // Reset input
+            document.getElementById('namaGuru').value = "";
+            document.getElementById('tujuan').value = "";
+            document.getElementById('lokasi').value = "";
+            document.getElementById('tarikhMasa').value = "";
+
+        } catch (error) {
+            alert("Ralat sambungan. Sila cuba lagi.");
+            console.error("Ralat:", error);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Hantar Tempahan";
+        }
+    }
+</script>
+
+</body>
+</html>
