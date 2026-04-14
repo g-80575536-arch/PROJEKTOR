@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tempahan Projektor SK Krangan</title>
+    <title>Booking Projektor SK Krangan</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f0f2f5; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { max-width: 650px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
         .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #1a73e8; }
         
@@ -29,10 +29,11 @@
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         
         .table-container { overflow-x: auto; margin-top: 30px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 450px; }
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; }
         th { background-color: #f8f9fa; color: #555; }
         tr:nth-child(even) { background-color: #fafafa; }
+        #loadingStatus { text-align: center; font-style: italic; color: #666; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -49,7 +50,7 @@
     </div>
 
     <div class="warning-text">
-        ⚠️ <strong>PERHATIAN:</strong> Sila rujuk <b>Rekod Tempahan</b> di bahagian bawah halaman ini sebelum mengisi borang untuk mengelakkan pertindihan waktu penggunaan.
+        ⚠️ <strong>PERHATIAN:</strong> Sila rujuk <b>Rekod Tempahan</b> di bawah sebelum mengisi borang untuk mengelakkan pertindihan waktu penggunaan.
     </div>
     
     <label>Nama Guru:</label>
@@ -66,9 +67,10 @@
     
     <button id="btnHantar" onclick="tambahBooking()">Hantar Tempahan</button>
 
-    <hr style="margin-top: 30px; border: 0; border-top: 1px solid #eee;">
+    <hr style="margin-top: 40px; border: 0; border-top: 1px solid #eee;">
 
-    <h3>Rekod Tempahan</h3>
+    <h3>Rekod Tempahan Terkini</h3>
+    <div id="loadingStatus">Memuatkan rekod...</div>
     <div class="table-container">
         <table id="jadualBooking">
             <thead>
@@ -86,6 +88,45 @@
 </div>
 
 <script>
+    const urlAPI = "https://script.google.com/macros/s/AKfycbznnbNkkhQ3LRS6O4NlOyo1E2UlFwt8uooWJZEneH_Nx0_ONXXMglEfApjYNrJLN6WumA/exec";
+
+    // 1. Tarik data automatik semasa laman web dibuka
+    window.onload = function() {
+        paparRekodDariSheets();
+    };
+
+    async function paparRekodDariSheets() {
+        const tbody = document.querySelector("#jadualBooking tbody");
+        const status = document.getElementById('loadingStatus');
+
+        try {
+            const response = await fetch(urlAPI);
+            const data = await response.json();
+
+            tbody.innerHTML = ""; // Kosongkan jadual lama
+            
+            if (data.length === 0) {
+                status.innerText = "Tiada rekod tempahan dijumpai.";
+            } else {
+                status.style.display = "none";
+                // Susun data terbaru di atas
+                data.reverse().forEach(item => {
+                    const baris = tbody.insertRow();
+                    baris.innerHTML = `
+                        <td><b>${item.nama}</b></td>
+                        <td>${item.tujuan}</td>
+                        <td>${item.lokasi}</td>
+                        <td>${item.masa}</td>
+                    `;
+                });
+            }
+        } catch (error) {
+            console.error("Gagal memuatkan rekod:", error);
+            status.innerText = "Gagal memuatkan rekod dari Google Sheets.";
+        }
+    }
+
+    // 2. Fungsi untuk menghantar tempahan baru
     async function tambahBooking() {
         const btn = document.getElementById('btnHantar');
         const nama = document.getElementById('namaGuru').value;
@@ -109,11 +150,7 @@
             masa: masa.replace('T', ' ')
         };
 
-        // URL API BAHARU ANDA (...TL-u4g)
-        const urlAPI = "https://script.google.com/macros/s/AKfycbzQZtxuFrI1btphfQd9jQ2W3a4lkNj1r2AruBOlNISDpjMV-hM-wyNZq07fMK5xTL-u4g/exec";
-
         try {
-            // Menghantar data ke Google Sheets
             await fetch(urlAPI, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -121,17 +158,10 @@
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            // Tambah ke jadual visual
-            const jadual = document.getElementById('jadualBooking').getElementsByTagName('tbody')[0];
-            const barisBaru = jadual.insertRow(0);
-            barisBaru.innerHTML = `
-                <td><b>${nama}</b></td>
-                <td>${tujuan}</td>
-                <td>${lokasi}</td>
-                <td>${dataTempahan.masa}</td>
-            `;
-
             alert("Tempahan Berjaya Disimpan!");
+            
+            // Segarkan semula jadual selepas 1 saat
+            setTimeout(paparRekodDariSheets, 1000);
             
             // Reset input
             document.getElementById('namaGuru').value = "";
@@ -141,7 +171,7 @@
 
         } catch (error) {
             alert("Ralat sambungan. Sila cuba lagi.");
-            console.error("Ralat:", error);
+            console.error(error);
         } finally {
             btn.disabled = false;
             btn.innerText = "Hantar Tempahan";
