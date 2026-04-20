@@ -6,27 +6,17 @@
     <title>Booking Projektor SK Krangan</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background-color: #f0f2f5; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { max-width: 650px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
         .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; border: 1px solid #1a73e8; }
-        
-        /* Kotak Amaran Peraturan 3 Hari */
-        .policy-box { 
-            background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; 
-            text-align: center; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb;
-            font-size: 13px;
-        }
-
+        .policy-box { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold; border: 1px solid #f5c6cb; font-size: 13px; }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
         input { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; font-size: 15px; }
-        
         .flex-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
-        .flex-item { flex: 1; min-width: 120px; }
-
+        .flex-item { flex: 1; min-width: 140px; }
         button { width: 100%; background-color: #1a73e8; color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; margin-top: 25px; font-size: 16px; font-weight: bold; transition: background 0.3s; }
         button:hover { background-color: #1557b0; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
-        
         .table-container { overflow-x: auto; margin-top: 30px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; }
@@ -41,13 +31,9 @@
     <div style="text-align: center;">
         <img src="LOGO_SEKOLAH.png" alt="Logo Sekolah" style="width: 80px; height: auto; margin-bottom: 10px;">
     </div>
-    
     <h2>Borang Tempahan Projektor</h2>
     <div class="info-box">UNIT ICT SK KRANGAN</div>
-
-    <div class="policy-box">
-        ⚠️ PERATURAN: TEMPAHAN MESTILAH DIBUAT<br>SEKURANG-KURANGNYA 3 HARI SEBELUM TARIKH GUNA.
-    </div>
+    <div class="policy-box">⚠️ TEMPAHAN MESTILAH 3 HARI SEBELUM TARIKH GUNA</div>
     
     <label>Nama Guru:</label>
     <input type="text" id="namaGuru" placeholder="Nama penuh anda">
@@ -69,7 +55,7 @@
     <div class="flex-row">
         <div class="flex-item">
             <label>Lokasi:</label>
-            <input type="text" id="lokasi" placeholder="Cth: Kelas 4 Gemilang">
+            <input type="text" id="lokasi" placeholder="Cth: Kelas 4G">
         </div>
         <div class="flex-item">
             <label>Tujuan:</label>
@@ -79,17 +65,15 @@
     
     <button id="btnHantar" onclick="tambahBooking()">Hantar Tempahan</button>
 
-    <hr style="margin-top: 40px; border: 0; border-top: 1px solid #eee;">
-
-    <h3>Rekod Tempahan Terkini</h3>
-    <div id="loadingStatus">Memuatkan rekod...</div>
     <div class="table-container">
+        <h3>Rekod Tempahan Terkini</h3>
+        <div id="loadingStatus">Memuatkan rekod...</div>
         <table id="jadualBooking">
             <thead>
                 <tr>
                     <th>Guru</th>
                     <th>Tarikh</th>
-                    <th>Masa (AM/PM)</th>
+                    <th>Masa</th>
                     <th>Lokasi</th>
                     <th>Tujuan</th>
                 </tr>
@@ -100,95 +84,94 @@
 </div>
 
 <script>
-    // URL API Google Apps Script yang anda berikan
-    const urlAPI = "https://script.google.com/macros/s/AKfycbycfMhXpUz6eZXXuAJIrVQ0PG87XD6Bm7cRhNr8Ul2KicJ_P4dUpoVVbM6Pk3QMRK4khA/exec";
+    // URL API yang anda berikan
+    const urlAPI = "https://script.google.com/macros/s/AKfycbxu-4wI_nHF9ATBFr8fhC3SlI3Ap4KbUaaBjW_MXd4xol0Mx3bfGhDpracC3N24ZPUWjw/exec";
 
-    window.onload = paparRekod;
+    // Simpan data global untuk semakan pertindihan
+    let rekodSediaAda = [];
 
-    // Fungsi untuk menukar format 24j ke 12j (AM/PM)
-    function formatKe12Jam(masa) {
-        if (!masa || masa === "-") return "-";
-        let parts = masa.toString().match(/(\d{1,2}):(\d{2})/);
-        if (parts) {
-            let jam = parseInt(parts[1]);
-            let minit = parts[2];
-            let ampm = jam >= 12 ? 'PM' : 'AM';
-            jam = jam % 12 || 12;
-            return `${jam}:${minit} ${ampm}`;
-        }
-        return masa;
+    // Format masa 24j ke 12j
+    function formatAMPM(time) {
+        if(!time || time === "-") return "-";
+        let [h, m] = time.split(':');
+        let ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${m} ${ampm}`;
     }
 
+    // Fungsi Papar Rekod
     async function paparRekod() {
         const tbody = document.querySelector("#jadualBooking tbody");
         const status = document.getElementById('loadingStatus');
-
         try {
             const res = await fetch(urlAPI);
-            const data = await res.json();
+            rekodSediaAda = await res.json();
             tbody.innerHTML = "";
+            status.style.display = "none";
             
-            if (!data || data.length === 0) {
-                status.innerText = "Tiada rekod tempahan dijumpai.";
-            } else {
-                status.style.display = "none";
-                data.reverse().forEach(item => {
-                    const row = tbody.insertRow();
-                    row.innerHTML = `
-                        <td><b>${item.nama}</b></td>
-                        <td>${item.tarikh}</td>
-                        <td>${formatKe12Jam(item.mGuna)} - ${formatKe12Jam(item.mHantar)}</td>
-                        <td>${item.lokasi || '-'}</td>
-                        <td>${item.tujuan || '-'}</td>
-                    `;
-                });
-            }
+            rekodSediaAda.slice().reverse().forEach(item => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><b>${item.nama}</b></td>
+                    <td>${item.tarikh}</td>
+                    <td>${formatAMPM(item.mGuna)} - ${formatAMPM(item.mHantar)}</td>
+                    <td>${item.lokasi}</td>
+                    <td>${item.tujuan}</td>
+                `;
+            });
         } catch (e) {
-            status.innerText = "Gagal memuatkan rekod.";
-            console.error(e);
+            status.innerText = "Sedia menerima tempahan baru.";
         }
     }
 
+    // Fungsi Tambah Booking
     async function tambahBooking() {
         const btn = document.getElementById('btnHantar');
-        const inputTarikh = document.getElementById('tarikh').value;
         const nama = document.getElementById('namaGuru').value;
+        const tarikh = document.getElementById('tarikh').value;
         const mGuna = document.getElementById('masaGuna').value;
         const mHantar = document.getElementById('masaHantar').value;
         const lokasi = document.getElementById('lokasi').value;
         const tujuan = document.getElementById('tujuan').value;
 
-        if (!nama || !inputTarikh || !mGuna || !mHantar) {
-            alert("Sila lengkapkan maklumat penting (Nama, Tarikh, Masa)!");
+        if (!nama || !tarikh || !mGuna || !mHantar || !lokasi) {
+            alert("Sila lengkapkan maklumat penting!");
             return;
         }
 
-        // --- LOGIK SEMAKAN 3 HARI ---
-        const tarikhDipilih = new Date(inputTarikh);
-        tarikhDipilih.setHours(0,0,0,0);
-        const hariIni = new Date();
-        hariIni.setHours(0,0,0,0);
+        // 1. Semakan 3 Hari Awal
+        const tDipilih = new Date(tarikh); tDipilih.setHours(0,0,0,0);
+        const tHariIni = new Date(); tHariIni.setHours(0,0,0,0);
+        const diff = Math.ceil((tDipilih - tHariIni) / (1000 * 3600 * 24));
 
-        const perbezaanMasa = tarikhDipilih.getTime() - hariIni.getTime();
-        const perbezaanHari = Math.ceil(perbezaanMasa / (1000 * 3600 * 24));
-
-        if (perbezaanHari < 3) {
-            alert("MAAF! Tempahan mestilah dibuat sekurang-kurangnya 3 hari sebelum tarikh penggunaan.");
+        if (diff < 3) {
+            alert("MAAF! Tempahan mestilah dibuat sekurang-kurangnya 3 hari sebelum tarikh guna.");
             return;
         }
-        // ----------------------------
 
+        // 2. Semakan Pertindihan (Clash Detection)
+        const masaMulaBaru = mGuna.replace(':', '');
+        const masaTamatBaru = mHantar.replace(':', '');
+
+        const isClash = rekodSediaAda.some(rekod => {
+            if (rekod.tarikh === tarikh && rekod.lokasi.toLowerCase() === lokasi.toLowerCase()) {
+                const mSediaMula = rekod.mGuna.replace(':', '');
+                const mSediaTamat = rekod.mHantar.replace(':', '');
+                return (masaMulaBaru < mSediaTamat && masaTamatBaru > mSediaMula);
+            }
+            return false;
+        });
+
+        if (isClash) {
+            alert("🚨 PERTINDIHAN! Lokasi dan masa ini telah ditempah oleh guru lain.");
+            return;
+        }
+
+        // 3. Hantar Data
         btn.disabled = true;
         btn.innerText = "Menghantar...";
 
-        const payload = {
-            nama: nama,
-            tarikh: inputTarikh,
-            mGuna: mGuna,
-            mHantar: mHantar,
-            lokasi: lokasi,
-            tujuan: tujuan
-        };
+        const payload = { nama, tarikh, mGuna, mHantar, lokasi, tujuan };
 
         try {
             await fetch(urlAPI, {
@@ -196,16 +179,16 @@
                 mode: 'no-cors',
                 body: JSON.stringify(payload)
             });
-
-            alert("Tempahan Berjaya! Rekod akan dikemaskini.");
-            location.reload(); 
+            alert("Tempahan Berjaya!");
+            location.reload();
         } catch (e) {
-            alert("Ralat sambungan. Sila cuba lagi.");
+            alert("Ralat sambungan.");
             btn.disabled = false;
             btn.innerText = "Hantar Tempahan";
         }
     }
-</script>
 
+    window.onload = paparRekod;
+</script>
 </body>
 </html>
