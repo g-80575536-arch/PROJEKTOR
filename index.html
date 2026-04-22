@@ -3,62 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Tempahan Projektor PJ01</title>
+    <title>E-Tempah Projektor</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #1a73e8; text-align: center; margin-bottom: 5px; }
-        .unit-tag { background: #e8f0fe; color: #1a73e8; text-align: center; font-weight: bold; padding: 8px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #1a73e8; }
+        :root {
+            --primary-color: #1a73e8;
+            --bg-color: #f4f7f9;
+            --text-color: #333;
+            --danger: #d93025;
+            --success: #188038;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            padding: 20px; 
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container { 
+            max-width: 600px; 
+            margin: auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo { width: 90px; height: auto; margin-bottom: 5px; }
+        .school-name { 
+            display: block; 
+            font-weight: bold; 
+            font-size: 18px; 
+            color: #555;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
         
-        .alert { padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 15px; display: none; font-weight: bold; text-align: center; }
+        h2 { color: var(--primary-color); margin: 5px 0; font-size: 24px; letter-spacing: 1px; }
+        
+        .unit-tag { 
+            background: #e8f0fe; 
+            color: var(--primary-color); 
+            text-align: center; 
+            font-weight: bold; 
+            padding: 8px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            border: 1px solid #c2d7fa;
+        }
+
+        .instruction-box { 
+            background: #fff3cd; 
+            color: #856404; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+            border-left: 6px solid #ffc107; 
+        }
+        .instruction-box strong { color: var(--danger); }
+
+        label { font-weight: bold; display: block; margin-top: 15px; font-size: 14px; }
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 5px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+            outline: none;
+        }
+
+        .alert { 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            margin-top: 20px; 
+            display: none; 
+            font-weight: bold; 
+            text-align: center; 
+        }
         .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 
-        label { font-weight: bold; display: block; margin-top: 15px; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        
-        button { width: 100%; background: #1a73e8; color: white; border: none; padding: 15px; border-radius: 8px; margin-top: 25px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        
+        button { 
+            width: 100%; 
+            background-color: var(--primary-color); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 10px; 
+            margin-top: 25px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #1557b0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
         .record-section { margin-top: 40px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; }
-        th { background: #f8f9fa; }
+        th { background: #f8f9fa; color: #666; text-transform: uppercase; }
+
+        .footer-ict { 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: bold; 
+            color: var(--primary-color); 
+            margin-top: 30px; 
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Tempahan Projektor Online</h2>
-    <div class="unit-tag">UNIT: PJ01 (SK KRANGAN)</div>
+    <div class="header">
+        <img src="logo.png" alt="Logo SK Krangan" class="logo">
+        <span class="school-name">Sekolah Kebangsaan Krangan</span>
+        <h2>E-Tempah Projektor</h2>
+    </div>
 
-    <label>Nama Guru & Kelas:</label>
-    <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sarah (5 Bijak)">
+    <div class="instruction-box">
+        <strong>PENTING:</strong><br>
+        1. Sila semak jadual di bawah untuk mengelakkan pertindihan.<br>
+        2. <strong>SILA PASTIKAN ANDA MENGISI BUKU LOG KELUAR MASUK PROJEKTOR</strong> semasa mengambil dan memulangkannya.<br>
+        3. Pastikan Projektor dipulangkan bersama aksesori yang lengkap.
+    </div>
 
-    <label>Tarikh Penggunaan:</label>
-    <input type="date" id="tarikh" onchange="semakPertindihan()">
+    <form id="bookingForm">
+        <label>Nama Guru & Kelas:</label>
+        <input type="text" id="namaGuru" placeholder="Contoh: Stanley anak Ngawah (Tahun 4)" required>
 
-    <label>Pilih Slot Masa:</label>
-    <select id="slotMasa" onchange="semakPertindihan()">
-        <option value="">-- Pilih Slot --</option>
-        <option value="Slot 1 (07:30-08:00)">Slot 1 (07:30-08:00)</option>
-        <option value="Slot 2 (08:00-08:30)">Slot 2 (08:00-08:30)</option>
-        <option value="Slot 3 (08:30-09:00)">Slot 3 (08:30-09:00)</option>
-        <option value="Slot 4 (09:00-09:30)">Slot 4 (09:00-09:30)</option>
-        <option value="Slot 5 (09:30-10:00)">Slot 5 (09:30-10:00)</option>
-        <option value="Slot 6 (10:30-11:00)">Slot 6 (10:30-11:00)</option>
-        <option value="Slot 7 (11:00-11:30)">Slot 7 (11:00-11:30)</option>
-        <option value="Slot 8 (11:30-12:00)">Slot 8 (11:30-12:00)</option>
-        <option value="Slot 9 (12:00-12:30)">Slot 9 (12:00-12:30)</option>
-        <option value="Slot 10 (12:30-01:00)">Slot 10 (12:30-01:00)</option>
-    </select>
+        <label>Tarikh Penggunaan:</label>
+        <input type="date" id="tarikh" onchange="semakClash()" required>
 
-    <div id="statusMesej" class="alert"></div>
+        <label>Pilih Slot Masa:</label>
+        <select id="slotMasa" onchange="semakClash()" required>
+            <option value="">-- Pilih Slot --</option>
+            <option value="Slot 1 (07:30-08:00)">Slot 1 (07:30-08:00)</option>
+            <option value="Slot 2 (08:00-08:30)">Slot 2 (08:00-08:30)</option>
+            <option value="Slot 3 (08:30-09:00)">Slot 3 (08:30-09:00)</option>
+            <option value="Slot 4 (09:00-09:30)">Slot 4 (09:00-09:30)</option>
+            <option value="Slot 5 (09:30-10:00)">Slot 5 (09:30-10:00)</option>
+            <option value="Slot 6 (10:30-11:00)">Slot 6 (10:30-11:00)</option>
+            <option value="Slot 7 (11:00-11:30)">Slot 7 (11:00-11:30)</option>
+            <option value="Slot 8 (11:30-12:00)">Slot 8 (11:30-12:00)</option>
+            <option value="Slot 9 (12:00-12:30)">Slot 9 (12:00-12:30)</option>
+            <option value="Slot 10 (12:30-01:00)">Slot 10 (12:30-01:00)</option>
+        </select>
 
-    <button id="btnHantar" onclick="hantarTempahan()">Hantar Tempahan</button>
+        <div id="statusMesej" class="alert"></div>
+
+        <button type="button" id="btnHantar" onclick="hantarTempahan()">Hantar Tempahan</button>
+    </form>
 
     <div class="record-section">
-        <h3 style="text-align:center">Semakan Jadual Terkini</h3>
+        <h3 style="text-align:center; font-size: 16px;">Rekod Tempahan Terkini</h3>
         <table id="jadualRekod">
             <thead>
                 <tr>
@@ -70,34 +178,37 @@
             <tbody></tbody>
         </table>
     </div>
+
+    <div class="footer-ict">
+        UNIT ICT SK KRANGAN
+    </div>
 </div>
 
 <script>
-    // URL API BARU ANDA
     const urlAPI = "https://script.google.com/macros/s/AKfycbz3532OY41iClNbHAKg3rsiZofmEN5Qxf8JKltRSsfhGNNs_vOZBsEl922y_DWYSVtU3A/exec";
     
-    let rekodData = [];
+    let databaseTempahan = [];
 
-    // Muat data semasa mula
     async function muatData() {
         try {
             const res = await fetch(urlAPI);
-            rekodData = await res.json();
+            databaseTempahan = await res.json();
             paparJadual();
-        } catch (e) { console.error("Gagal muat data."); }
+        } catch (e) {
+            console.error("Gagal memuatkan jadual.");
+        }
     }
 
     function paparJadual() {
         const tbody = document.querySelector("#jadualRekod tbody");
         tbody.innerHTML = "";
-        rekodData.slice().reverse().forEach(r => {
+        databaseTempahan.slice().reverse().forEach(r => {
             const row = tbody.insertRow();
             row.innerHTML = `<td>${r.tarikh}</td><td>${r.slot}</td><td>${r.nama}</td>`;
         });
     }
 
-    // FUNGSI SEKAT DOUBLE BOOKING
-    function semakPertindihan() {
+    function semakClash() {
         const t = document.getElementById('tarikh').value;
         const s = document.getElementById('slotMasa').value;
         const msg = document.getElementById('statusMesej');
@@ -105,17 +216,17 @@
 
         if (!t || !s) return;
 
-        // Semak jika Tarikh + Slot sudah ada dalam Sheets
-        const sudahAda = rekodData.some(r => r.tarikh === t && r.slot === s);
+        const wujud = databaseTempahan.some(r => r.tarikh === t && r.slot === s);
 
         msg.style.display = "block";
-        if (sudahAda) {
+
+        if (wujud) {
             msg.className = "alert alert-danger";
             msg.innerText = "🚨 SLOT BERTINDIH! Sila pilih slot atau tarikh lain.";
             btn.disabled = true;
         } else {
             msg.className = "alert alert-success";
-            msg.innerText = "✅ SLOT KOSONG. Anda boleh menempah.";
+            msg.innerText = "✅ SLOT KOSONG. Sila catat pada buku log selepas menghantar.";
             btn.disabled = false;
         }
     }
@@ -126,10 +237,13 @@
         const slot = document.getElementById('slotMasa').value;
         const btn = document.getElementById('btnHantar');
 
-        if (!nama || !tarikh || !slot) return alert("Lengkapkan maklumat!");
+        if (!nama || !tarikh || !slot) {
+            alert("Sila lengkapkan maklumat!");
+            return;
+        }
 
         btn.disabled = true;
-        btn.innerText = "Memproses...";
+        btn.innerText = "Menghantar...";
 
         try {
             await fetch(urlAPI, {
@@ -137,15 +251,18 @@
                 mode: 'no-cors',
                 body: JSON.stringify({ nama, tarikh, slot })
             });
-            alert("Tempahan Berjaya!");
+            
+            alert("TEMPAHAN BERJAYA!\n\nJangan lupa membuat catatan pada BUKU LOG FIZIKAL.");
             location.reload();
         } catch (e) {
-            alert("Ralat. Cuba lagi.");
+            alert("Ralat berlaku.");
             btn.disabled = false;
+            btn.innerText = "Hantar Tempahan";
         }
     }
 
     window.onload = muatData;
 </script>
+
 </body>
 </html>
